@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Crystal Zhang — Product Designer</title>
+    <meta name="description" content="Tingyu Zhang (Crystal) — UI&UX Designer & User Research Engineer. 7+ years crafting cloud computing product experiences at QingCloud." />
+    <link rel="canonical" href="https://zhangtingyu.com/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://zhangtingyu.com/" />
+    <meta property="og:title" content="Crystal Zhang — Product Designer" />
+    <meta property="og:description" content="Tingyu Zhang (Crystal) — UI&UX Designer & User Research Engineer. 7+ years crafting cloud computing product experiences at QingCloud." />
+    <meta property="og:image" content="https://zhangtingyu.com/assets/project-covers/bigdata-dark.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Crystal Zhang — Product Designer" />
+    <meta name="twitter:description" content="Tingyu Zhang (Crystal) — UI&UX Designer & User Research Engineer. 7+ years crafting cloud computing product experiences at QingCloud." />
+    <meta name="twitter:image" content="https://zhangtingyu.com/assets/project-covers/bigdata-dark.png" />
+    <script>
+      (function () {
+        var theme = 'dark';
+        try {
+          var savedTheme = localStorage.getItem('portfolio-theme');
+          if (savedTheme === 'light' || savedTheme === 'dark') theme = savedTheme;
+        } catch (error) {}
+        document.documentElement.setAttribute('data-theme', theme);
+        document.documentElement.classList.add('intro-theme-' + theme);
+
+        var forceIntro = location.search.indexOf('replay-intro=1') > -1;
+        var navigationEntry = performance.getEntriesByType && performance.getEntriesByType('navigation')[0];
+        var isRefresh = navigationEntry && navigationEntry.type === 'reload';
+        var hasPlayed = false;
+        try { hasPlayed = sessionStorage.getItem('crystal-intro-played') === '1'; } catch (error) {}
+        if (forceIntro || isRefresh || !hasPlayed) {
+          document.documentElement.classList.add('is-intro-playing');
+          try { sessionStorage.setItem('crystal-intro-played', '1'); } catch (error) {}
+        } else {
+          document.documentElement.classList.add('is-intro-done');
+        }
+      })();
+    </script>
+    <link rel="icon" href="/favicon.svg?v=2" type="image/svg+xml" sizes="any" />
+    <link rel="shortcut icon" href="/favicon.svg?v=2" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+    <script type="module" src="/assets/index.js?v=3"></script>
+    <link rel="stylesheet" href="/assets/index.css" />
+    <link rel="stylesheet" href="/assets/brand.css?v=61" />
+    <link rel="stylesheet" href="/assets/intro.css?v=4" />
+    <script src="/assets/intro.js?v=9" defer></script>
+    <script type="module" src="/assets/brand.js?v=50"></script>
+  </head>
+  <body>
+    <div id="root"></div>
+  </body>
+</html>

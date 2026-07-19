@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="228" height="64" viewBox="0 0 228 64">
+  <defs>
+    <linearGradient id="g" x1="6" y1="7" x2="54" y2="57" gradientUnits="userSpaceOnUse"><stop stop-color="#a8f57a"/><stop offset=".52" stop-color="#4dd4ac"/><stop offset="1" stop-color="#4a90d4"/></linearGradient>
+    <style>@font-face{font-family:RC;src:url('../fonts/RobotoCondensed-Variable-Latin.woff2')}text{font-family:RC,'Arial Narrow',sans-serif}</style>
+  </defs>
+  <g transform="translate(5 8)">
+    <path d="M25 0a16 16 0 1 0 0 32v-7.1a8.9 8.9 0 1 1 0-17.4V0Z" fill="url(#g)"/>
+    <path d="M27.4 0h14.1l-9.6 16.8h9.6v6.7H20.2L29.8 6.8h-2.4V0Z" fill="#f4f4f6"/>
+    <circle cx="38.7" cy="38.3" r="3.1" fill="#a8f57a"/>
+  </g>
+  <text x="66" y="43" font-size="35" font-weight="500" letter-spacing="1.7" fill="#f4f4f6">Crystal</text>
+</svg>
