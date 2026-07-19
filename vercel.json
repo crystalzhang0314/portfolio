@@ -2,8 +2,8 @@
   "buildCommand": "",
   "outputDirectory": ".",
   "cleanUrls": true,
-  "rewrites": [
-    { "source": "/project/:path*", "destination": "/index.html" },
-    { "source": "/(.*)", "destination": "/index.html" }
+  "routes": [
+    { "handle": "filesystem" },
+    { "src": "/(.*)", "dest": "/index.html" }
   ]
 }
