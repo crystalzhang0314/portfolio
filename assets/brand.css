@@ -2472,3 +2472,16 @@ svg {
   display: inline;
   margin-left: 0;
 }
+
+/* Suppress 404 flash: React renders .detail-404 for capability/other-works
+   routes before brand.js replaces the content. Hide the 404 inner content
+   briefly so it never appears during that gap. If brand.js doesn't run
+   (genuine 404), the content fades in after 200ms. */
+.detail-404__inner {
+  opacity: 0;
+  animation: detail-404-reveal 0.25s 0.2s forwards;
+}
+
+@keyframes detail-404-reveal {
+  to { opacity: 1; }
+}

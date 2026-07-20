@@ -338,10 +338,8 @@ function researchVisualMarkup(type) {
 const operationsChannelStats = [
   ["知乎", 71, "https://www.zhihu.com/people/49-88-11-91-85/posts"],
   ["搜狐号", 71, "https://www.sohu.com/media/122479548"],
-  ["一点号", 70, "https://www.yidianzixun.com/search?word=%E9%9D%92%E4%BA%91%E4%BA%91%E6%98%93%E6%8D%B7"],
   ["CSDN", 69, "https://blog.csdn.net/ProgrammerPulse"],
-  ["掘金", 69, "https://juejin.cn/search?query=%E9%9D%92%E4%BA%91%E4%BA%91%E6%98%93%E6%8D%B7"],
-  ["InfoQ", 67, "https://www.infoq.cn/search.action?queryString=%E9%9D%92%E4%BA%91%E4%BA%91%E6%98%93%E6%8D%B7"]
+  ["掘金", 69, "https://juejin.cn/search?query=%E9%9D%92%E4%BA%91%E4%BA%91%E6%98%93%E6%8D%B7"]
 ];
 
 function productOperationsMarkup() {
@@ -723,7 +721,10 @@ function applyDetailPageLayout() {
         ]
       : contributions;
   const projectIndex = projectCovers.indexOf(project);
-  const nextProject = projectCovers[(projectIndex + 1) % projectCovers.length];
+  const isLastProject = projectIndex === projectCovers.length - 1;
+  const nextProject = isLastProject
+    ? { route: "other-works", label: "其他设计作品" }
+    : projectCovers[(projectIndex + 1) % projectCovers.length];
 
   const tagMarkup = resolvedTags.map((tag) => `<span class="project-detail-tag">${tag}</span>`).join("");
   const contributionMarkup = resolvedContributions.map((item, index) => `
@@ -776,7 +777,7 @@ function applyDetailPageLayout() {
         <div class="project-story-chapter__heading"><h2>${chapter.title}</h2><p>${chapter.copy}</p></div>
         ${chapter.custom ? quiVisual(chapter.custom) : `<div class="project-story-figures ${chapter.images.length > 1 ? "project-story-figures--split media-pair--equal-scroll" : ""}">${chapter.images.map(([file, alt, caption]) => `<figure><div class="project-story-image" ${chapter.images.length > 1 ? `tabindex="0" aria-label="可滚动查看完整图片：${alt}"` : ""}><img src="/assets/detail-media/${project.slug}/${file}" alt="${alt}" loading="lazy" decoding="async"></div><figcaption><strong>${alt}</strong><span>${caption}</span></figcaption></figure>`).join("")}</div>`}
       </section>`).join("")}` : ""}
-      ${detailSeriesFooterMarkup(`/project/${nextProject.route}`, "下一个项目", nextProject.label)}
+      ${detailSeriesFooterMarkup(`/project/${nextProject.route}`, isLastProject ? "其他设计作品" : "下一个项目", nextProject.label)}
     </article>
   `;
   content.dataset.portfolioDetail = "complete";
@@ -942,13 +943,31 @@ function enableSeamlessInternalNavigation() {
     // that briefly flashes a React 404 before brand.js replaces the DOM.
     if (anchor.classList.contains("detail-series-footer__next")) {
       event.preventDefault();
+      // Clear project detail content
       const content = document.querySelector(".detail__content");
       if (content) {
         delete content.dataset.portfolioDetail;
         content.innerHTML = "";
       }
+      // Clear capability / other-works host so brand.js rebuilds on next cycle
+      const capHost = document.querySelector(".capability-detail, .other-works-detail");
+      if (capHost) {
+        delete capHost.dataset.capabilityDetail;
+        delete capHost.dataset.otherWorks;
+        capHost.className = "detail-404";
+        capHost.innerHTML = "";
+      }
       history.pushState({}, "", `${url.pathname}${url.search}${url.hash}`);
-      window.dispatchEvent(new PopStateEvent("popstate"));
+      // For capability / other-works pages, call syncCurrentPage directly
+      // instead of dispatching popstate. React's popstate handler would
+      // re-render and replace the .detail-404 host element with a fresh
+      // node, causing brand.js to lose its reference and fail to rebuild.
+      // Direct queuePageSync avoids triggering React's re-render entirely.
+      if (capHost) {
+        queuePageSync();
+      } else {
+        window.dispatchEvent(new PopStateEvent("popstate"));
+      }
       window.scrollTo({ top: 0, behavior: "instant" });
       return;
     }
