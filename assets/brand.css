@@ -1222,7 +1222,7 @@ body {
   width: 100%;
   aspect-ratio: 1600 / 532;
   overflow: hidden;
-  border: 0;
+  border: 1px solid var(--border-subtle);
   border-radius: 12px;
   background: transparent;
 }
