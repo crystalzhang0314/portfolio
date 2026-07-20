@@ -2485,3 +2485,40 @@ svg {
 @keyframes detail-404-reveal {
   to { opacity: 1; }
 }
+
+/* ---------- Detail page enter animation ----------
+   Subtle fade-in + slide-up when entering any detail page. */
+@keyframes detail-enter {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.detail-enter {
+  animation: detail-enter 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ---------- Hero greeting fade-in ----------
+   "Hi, I'm" fades in from nothing, then "Crystal Zhang" types. */
+.hero__title-greeting {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+}
+
+.hero__title-greeting.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* During intro, hide the typing content so "Crystal Zhang" doesn't
+   flash before brand.js clears it. */
+.is-intro-playing .hero__title-typing .text-type__content {
+  visibility: hidden;
+}

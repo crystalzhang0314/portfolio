@@ -60,18 +60,72 @@ function applyHeroContentChanges() {
   return Boolean(experienceLabel && qingCloudValue);
 }
 
+function enhanceHeroGreeting() {
+  const line = document.querySelector(".hero__title-line");
+  if (!line || line.dataset.greetingWrapped === "true") return null;
+
+  const typing = line.querySelector(".hero__title-typing");
+  if (!typing) return null;
+
+  // Find the first non-whitespace text node before the typing span.
+  let targetNode = null;
+  for (const node of line.childNodes) {
+    if (node === typing) break;
+    if (node.nodeType === Node.TEXT_NODE && node.textContent.trim() !== "") {
+      targetNode = node;
+      break;
+    }
+  }
+  if (!targetNode) return null;
+
+  // Split the text node: wrap only the trimmed text in the greeting span,
+  // and keep leading/trailing whitespace as separate text nodes so the
+  // horizontal spacing between "Hi, I'm" and "Crystal Zhang" is preserved.
+  const raw = targetNode.textContent;
+  const trimmed = raw.trim();
+  const lead = raw.slice(0, raw.length - raw.trimStart().length);
+  const trail = raw.slice(raw.trimEnd().length);
+
+  const greeting = document.createElement("span");
+  greeting.className = "hero__title-greeting";
+  greeting.textContent = trimmed;
+
+  const parent = targetNode.parentNode;
+  if (lead) parent.insertBefore(document.createTextNode(lead), targetNode);
+  parent.insertBefore(greeting, targetNode);
+  if (trail) parent.insertBefore(document.createTextNode(trail), targetNode);
+  parent.removeChild(targetNode);
+
+  line.dataset.greetingWrapped = "true";
+  return greeting;
+}
+
 function restoreHeroTypingAfterIntro() {
   if (location.pathname !== "/") return true;
   const typing = document.querySelector(".hero__title-typing");
   const content = typing?.querySelector(".text-type__content");
   if (!typing || !content) return false;
 
+  // Wrap "Hi, I'm" in a greeting span for fade-in animation
+  const greeting = enhanceHeroGreeting();
+
   // The React typing animation starts while the full-screen intro is still
   // covering the page. Replay only in that case so regular in-page navigation
   // keeps the original animation and does not type twice.
-  if (!document.documentElement.classList.contains("is-intro-playing")) return true;
+  if (!document.documentElement.classList.contains("is-intro-playing")) {
+    // Non-intro case: fade in greeting shortly after page load
+    if (greeting) {
+      setTimeout(() => greeting.classList.add("is-visible"), 80);
+    }
+    return true;
+  }
   if (typing.dataset.introRetype) return true;
   typing.dataset.introRetype = "pending";
+
+  // Immediately clear typing content so "Crystal Zhang" doesn't flash
+  // when the intro overlay is removed. The React typing component runs
+  // during the intro and may have already typed the full text.
+  content.textContent = "";
 
   const target = "Crystal Zhang";
   const waitForIntroExit = () => {
@@ -83,20 +137,28 @@ function restoreHeroTypingAfterIntro() {
       return;
     }
 
-    content.textContent = "";
+    // Fade in greeting first, then type "Crystal Zhang"
+    if (greeting) {
+      greeting.classList.add("is-visible");
+    }
+
+    // Re-query content in case React re-rendered during intro
+    const liveContent = typing.querySelector(".text-type__content") || content;
+    liveContent.textContent = "";
     typing.dataset.introRetype = "running";
     let index = 0;
     const typeNext = () => {
-      if (!content.isConnected) return;
+      if (!liveContent.isConnected) return;
       index += 1;
-      content.textContent = target.slice(0, index);
+      liveContent.textContent = target.slice(0, index);
       if (index < target.length) {
         window.setTimeout(typeNext, 42);
       } else {
         typing.dataset.introRetype = "complete";
       }
     };
-    window.setTimeout(typeNext, 120);
+    // Start typing after greeting fade-in completes (~550ms)
+    window.setTimeout(typeNext, 550);
   };
 
   requestAnimationFrame(waitForIntroExit);
@@ -1070,6 +1132,15 @@ function syncCurrentPage() {
      avoid an infinite loop caused by the MutationObserver
      re-triggering syncCurrentPage on every DOM mutation. */
   if (isDetail) {
+    // Trigger detail enter animation (fade-in + slide-up)
+    const shell = document.querySelector(
+      ".project-detail-shell, .capability-detail, .other-works-detail"
+    );
+    if (shell && !shell.dataset.detailEntered) {
+      shell.dataset.detailEntered = "true";
+      shell.classList.add("detail-enter");
+    }
+
     const scrollToTop = () => window.scrollTo({ top: 0, behavior: "instant" });
     scrollToTop();
     requestAnimationFrame(scrollToTop);
