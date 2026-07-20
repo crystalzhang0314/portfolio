@@ -2517,8 +2517,11 @@ svg {
   transform: translateY(0);
 }
 
-/* During intro, hide the typing content so "Crystal Zhang" doesn't
-   flash before brand.js clears it. */
-.is-intro-playing .hero__title-typing .text-type__content {
+/* Hide typing content while brand.js controls the retyping sequence.
+   `is-intro-playing` covers the intro phase; `is-hero-retyping` bridges
+   the gap between intro exit and our typing start so React's pre-typed
+   "Crystal Zhang" never flashes. */
+.is-intro-playing .hero__title-typing .text-type__content,
+.is-hero-retyping .hero__title-typing .text-type__content {
   visibility: hidden;
 }

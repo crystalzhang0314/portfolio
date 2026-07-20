@@ -122,10 +122,11 @@ function restoreHeroTypingAfterIntro() {
   if (typing.dataset.introRetype) return true;
   typing.dataset.introRetype = "pending";
 
-  // Immediately clear typing content so "Crystal Zhang" doesn't flash
-  // when the intro overlay is removed. The React typing component runs
-  // during the intro and may have already typed the full text.
-  content.textContent = "";
+  // Add our own class to keep typing content hidden even after the intro
+  // overlay is removed. React has already typed "Crystal Zhang" during
+  // the intro; without this, the text would flash between intro exit and
+  // our retyping start. We remove the class only when typing begins.
+  document.documentElement.classList.add("is-hero-retyping");
 
   const target = "Crystal Zhang";
   const waitForIntroExit = () => {
@@ -149,6 +150,8 @@ function restoreHeroTypingAfterIntro() {
     let index = 0;
     const typeNext = () => {
       if (!liveContent.isConnected) return;
+      // Remove hiding class on first character so text appears with typing
+      document.documentElement.classList.remove("is-hero-retyping");
       index += 1;
       liveContent.textContent = target.slice(0, index);
       if (index < target.length) {
