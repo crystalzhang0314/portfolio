@@ -630,13 +630,19 @@ function ensureDetailSideProgress() {
   progress.innerHTML = `<span class="detail-side-progress__line"><i></i></span><ol>${sections.map((section, index) => `<li><button data-target="${section.id}"><b>${String(index + 1).padStart(2, "0")}</b><span>${section.dataset.progressLabel || section.querySelector(".project-detail-section__header p")?.textContent || "内容"}</span></button></li>`).join("")}</ol>`;
   document.body.appendChild(progress);
   progress.querySelectorAll("button").forEach((button) => button.addEventListener("click", () => document.getElementById(button.dataset.target)?.scrollIntoView({ behavior: "smooth", block: "start" })));
+  let ticking = false;
   const update = () => {
-    const max = document.documentElement.scrollHeight - innerHeight;
-    const ratio = max > 0 ? Math.min(1, Math.max(0, scrollY / max)) : 0;
-    progress.style.setProperty("--detail-progress", ratio);
-    let active = 0;
-    sections.forEach((section, index) => { if (section.getBoundingClientRect().top <= innerHeight * .42) active = index; });
-    progress.querySelectorAll("li").forEach((item, index) => item.classList.toggle("is-active", index === active));
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(() => {
+      const max = document.documentElement.scrollHeight - innerHeight;
+      const ratio = max > 0 ? Math.min(1, Math.max(0, scrollY / max)) : 0;
+      progress.style.setProperty("--detail-progress", ratio);
+      let active = 0;
+      sections.forEach((section, index) => { if (section.getBoundingClientRect().top <= innerHeight * .42) active = index; });
+      progress.querySelectorAll("li").forEach((item, index) => item.classList.toggle("is-active", index === active));
+      ticking = false;
+    });
   };
   addEventListener("scroll", update, { passive: true });
   update();

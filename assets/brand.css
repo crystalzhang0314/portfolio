@@ -16,6 +16,22 @@ body {
   overflow-x: clip;
 }
 
+/* Reduce mobile scroll jitter: promote fixed/sticky navs to their own
+   compositor layers, and avoid transitioning backdrop-filter on the navbar. */
+.navbar,
+.capability-detail-nav {
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+}
+
+.navbar {
+  transition: transform var(--duration-normal) var(--ease-out),
+              opacity var(--duration-normal) var(--ease-out),
+              color var(--duration-normal) var(--ease-out),
+              background-color var(--duration-normal) var(--ease-out),
+              border-color var(--duration-normal) var(--ease-out);
+}
+
 .navbar__logo {
   gap: 9px;
 }
