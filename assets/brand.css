@@ -1683,7 +1683,6 @@ body {
 
 /* Keep the image boundary on the viewport itself, so it remains complete
    while a tall paired image scrolls internally. */
-.project-detail-cover,
 .project-detail-shell .project-story-image,
 .capability-detail-main .capability-story-media__image,
 .other-works-detail .other-works-page {
@@ -1693,7 +1692,6 @@ body {
   overflow: hidden;
 }
 
-[data-theme="light"] .project-detail-cover,
 [data-theme="light"] .project-detail-shell .project-story-image,
 [data-theme="light"] .capability-detail-main .capability-story-media__image,
 [data-theme="light"] .other-works-detail .other-works-page {

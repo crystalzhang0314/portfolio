@@ -836,13 +836,13 @@ function ensureDetailImageLightbox() {
     ".project-detail-shell img",
     ".capability-detail-main img",
     ".other-works-detail__pages img",
-    ".project-detail-cover__image",
     ".project-story-image img",
     ".capability-story-media__image img",
     ".other-works-page img"
   ].join(",");
 
   document.querySelectorAll(selector).forEach((image) => {
+    if (image.closest(".project-detail-cover")) return;
     if (image.dataset.lightboxReady === "true") return;
     image.dataset.lightboxReady = "true";
     image.classList.add("detail-image-zoomable");
