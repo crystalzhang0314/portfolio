@@ -937,13 +937,19 @@ function enableSeamlessInternalNavigation() {
     const url = new URL(anchor.href, location.href);
     if (url.origin !== location.origin || !url.pathname.startsWith("/")) return;
 
-    // Each detail page is assembled from its route on initial load. A
-    // pushState-only transition keeps the previous page's completed DOM and
-    // therefore looks like a plain "back to top" action. Series links use a
-    // normal same-origin navigation so the requested detail is rebuilt.
+    // Series footer "next project" links need to rebuild the detail page from
+    // scratch. Using pushState + content clear avoids the full-page reload
+    // that briefly flashes a React 404 before brand.js replaces the DOM.
     if (anchor.classList.contains("detail-series-footer__next")) {
       event.preventDefault();
-      window.location.assign(`${url.pathname}${url.search}${url.hash}`);
+      const content = document.querySelector(".detail__content");
+      if (content) {
+        delete content.dataset.portfolioDetail;
+        content.innerHTML = "";
+      }
+      history.pushState({}, "", `${url.pathname}${url.search}${url.hash}`);
+      window.dispatchEvent(new PopStateEvent("popstate"));
+      window.scrollTo({ top: 0, behavior: "instant" });
       return;
     }
 

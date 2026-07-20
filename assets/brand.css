@@ -2459,3 +2459,18 @@ svg {
 .project-detail-shell--qui .project-story-figures figcaption {
   padding-top: 16px;
 }
+
+/* ---------- Mobile typing cursor fix ----------
+   The React typing component renders .text-type as inline-block with
+   white-space:pre-wrap, which can push the blinking cursor onto its own
+   line on narrow viewports. Switching to display:inline lets the text and
+   cursor flow as regular inline content, preventing orphan cursor lines. */
+.hero__title-typing.text-type {
+  display: inline;
+  white-space: normal;
+}
+
+.hero__title-typing .text-type__cursor {
+  display: inline;
+  margin-left: 0;
+}
