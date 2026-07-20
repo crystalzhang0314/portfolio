@@ -1013,7 +1013,25 @@ function enableSeamlessInternalNavigation() {
     const nextTheme = document.documentElement.getAttribute("data-theme");
     if (!nextTheme || nextTheme === activeTheme) return;
     activeTheme = nextTheme;
-    location.reload();
+
+    // Immediately hide page content and show a themed overlay so the user
+    // doesn't see the new theme flash before reload + intro animation.
+    const html = document.documentElement;
+    html.classList.remove("is-intro-done");
+    html.classList.add("is-intro-playing");
+    html.classList.remove("intro-theme-light", "intro-theme-dark");
+    html.classList.add("intro-theme-" + nextTheme);
+
+    // Create a temporary overlay matching the intro backdrop
+    if (!document.getElementById("crystal-intro")) {
+      const overlay = document.createElement("div");
+      overlay.id = "crystal-intro";
+      overlay.setAttribute("aria-hidden", "true");
+      document.body.appendChild(overlay);
+    }
+
+    // Brief delay lets the overlay render before reload
+    setTimeout(() => location.reload(), 50);
   }).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
 }
 
