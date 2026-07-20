@@ -3,9 +3,8 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="color-scheme" content="dark light" />
-    <meta name="theme-color" content="#08080a" media="(prefers-color-scheme: dark)" />
-    <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
+    <meta name="color-scheme" content="dark" />
+    <meta name="theme-color" content="#08080a" />
     <title>Crystal Zhang — Product Designer</title>
     <meta name="description" content="Tingyu Zhang (Crystal) — UI&UX Designer & User Research Engineer. 7+ years crafting cloud computing product experiences at QingCloud." />
     <link rel="canonical" href="https://zhangtingyu.com/" />
@@ -27,6 +26,14 @@
         } catch (error) {}
         document.documentElement.setAttribute('data-theme', theme);
         document.documentElement.classList.add('intro-theme-' + theme);
+
+        // Sync browser-level color-scheme and theme-color so mobile browsers
+        // use the correct canvas color from the very first paint (no white
+        // flash when the system is in light mode but our default is dark).
+        var metaColorScheme = document.querySelector('meta[name="color-scheme"]');
+        if (metaColorScheme) metaColorScheme.setAttribute('content', theme);
+        var metaThemeColor = document.querySelector('meta[name="theme-color"]');
+        if (metaThemeColor) metaThemeColor.setAttribute('content', theme === 'light' ? '#ffffff' : '#08080a');
 
         var forceIntro = location.search.indexOf('replay-intro=1') > -1;
         var navigationEntry = performance.getEntriesByType && performance.getEntriesByType('navigation')[0];
