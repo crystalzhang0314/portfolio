@@ -1224,7 +1224,92 @@ body {
   overflow: hidden;
   border: 1px solid var(--border-subtle);
   border-radius: 12px;
-  background: transparent;
+  background: #0a0a0d;
+}
+
+/* Linear flowing gradient placeholder shown while the cover image decodes.
+   Pure CSS: the <img> (z-index:1) sits above these pseudo-elements; before
+   decode the img is transparent so the placeholder shows through, and once
+   decoded it covers the placeholder. No JS load-detection required. */
+.project-detail-cover::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background: linear-gradient(
+    100deg,
+    #0a0a0d 0%,
+    rgba(168, 245, 122, .14) 25%,
+    rgba(77, 212, 172, .12) 50%,
+    rgba(74, 144, 212, .11) 70%,
+    rgba(168, 245, 122, .14) 85%,
+    #0a0a0d 100%
+  );
+  background-size: 300% 100%;
+  filter: blur(18px);
+  animation: cover-linear-flow 5s linear infinite;
+}
+
+.project-detail-cover::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background: linear-gradient(
+    60deg,
+    transparent 0%,
+    rgba(77, 212, 172, .12) 30%,
+    rgba(168, 245, 122, .14) 55%,
+    rgba(74, 144, 212, .11) 75%,
+    transparent 100%
+  );
+  background-size: 250% 100%;
+  filter: blur(18px);
+  opacity: .85;
+  animation: cover-linear-flow-rev 7s linear infinite;
+}
+
+[data-theme="light"] .project-detail-cover {
+  background: #eef0f4;
+}
+[data-theme="light"] .project-detail-cover::before {
+  background: linear-gradient(
+    100deg,
+    #eef0f4 0%,
+    rgba(123, 201, 76, .12) 25%,
+    rgba(46, 184, 154, .10) 50%,
+    rgba(58, 123, 200, .09) 70%,
+    rgba(123, 201, 76, .12) 85%,
+    #eef0f4 100%
+  );
+  background-size: 300% 100%;
+}
+[data-theme="light"] .project-detail-cover::after {
+  background: linear-gradient(
+    60deg,
+    transparent 0%,
+    rgba(46, 184, 154, .10) 30%,
+    rgba(123, 201, 76, .12) 55%,
+    rgba(58, 123, 200, .09) 75%,
+    transparent 100%
+  );
+  background-size: 250% 100%;
+}
+
+@keyframes cover-linear-flow {
+  0%   { background-position: 0% 0%; }
+  100% { background-position: -300% 0%; }
+}
+@keyframes cover-linear-flow-rev {
+  0%   { background-position: -250% 0%; }
+  100% { background-position: 0% 0%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .project-detail-cover::before,
+  .project-detail-cover::after {
+    animation: none;
+  }
 }
 
 .project-detail-cover__image {
@@ -1234,6 +1319,7 @@ body {
   height: 100%;
   object-fit: cover;
   transform: scale(1.006) translate3d(0, 0, 0);
+  z-index: 1;
 }
 
 .project-detail-sr-only {
